@@ -25,12 +25,16 @@ SECRET_KEY = "django-insecure-_zp!t^a)&q-bzu687$zxek#!0-05h6*eka5)%^3vqfbpd9nt=^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    ".github.dev",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -123,3 +128,14 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.app.github.dev',
+    "https://localhost:8000",  # for local testing, optional
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+ENCRYPTED_MODEL_FIELDS_KEY = 'PDnpIVgLS4yXCnn8iEXAmwGILWmbCaX2nHjA9MnzCaE='
+
+
