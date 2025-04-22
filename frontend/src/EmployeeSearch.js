@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';  // Import React and useState hook
+import axios from 'axios';  // Axios for making API requests
 
 const EmployeeSearch = () => {
+  // States for managing the search input, results, role history data, and loading states
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [roleHistories, setRoleHistories] = useState({});
   const [loadingRoleHistory, setLoadingRoleHistory] = useState({});
 
+  // Handle employee search based on query
   const handleSearch = async () => {
     try {
       const response = await axios.get(
         `https://orange-system-wrgvjxvw6j9whg744-8000.app.github.dev/api/employees/?search=${query}`
       );
-      setResults(response.data);
+      setResults(response.data);  // Save employee search results
     } catch (error) {
       console.error('Search error:', error);
     }
   };
 
+  // Fetch role history for a specific employee
   const fetchRoleHistory = async (employeeId) => {
-    console.log('Fetching history for employee:', employeeId);
-    
-    if (loadingRoleHistory[employeeId]) return;
-
+    if (loadingRoleHistory[employeeId]) return;  // Avoid duplicate loading
     setLoadingRoleHistory((prev) => ({ ...prev, [employeeId]: true }));
 
     try {
@@ -31,7 +31,7 @@ const EmployeeSearch = () => {
       );
       setRoleHistories((prev) => ({
         ...prev,
-        [employeeId]: response.data,
+        [employeeId]: response.data,  // Save role history for the employee
       }));
     } catch (error) {
       console.error('Error fetching role history:', error);
@@ -42,7 +42,7 @@ const EmployeeSearch = () => {
 
   return (
     <div style={{ padding: '1rem' }}>
-      <h2>Search Employees</h2>
+      {/* Search input field */}
       <input
         type="text"
         placeholder="Search by name, department, etc."
@@ -56,6 +56,7 @@ const EmployeeSearch = () => {
           border: '1px solid #ccc',
         }}
       />
+      {/* Search button */}
       <button
         onClick={handleSearch}
         style={{
@@ -70,6 +71,7 @@ const EmployeeSearch = () => {
         Search
       </button>
 
+      {/* Results section */}
       <div style={{ marginTop: '2rem' }}>
         {results.map((employee) => (
           <div
@@ -82,12 +84,14 @@ const EmployeeSearch = () => {
               boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
             }}
           >
+            {/* Employee details */}
             <h3>{employee.name}</h3>
             <p><strong>Employee ID:</strong> {employee.employee_id}</p>
             <p><strong>Company:</strong> {employee.company_name}</p>
             <p><strong>Department:</strong> {employee.department_name}</p>
             <p><strong>Current Role:</strong> {employee.current_role}</p>
 
+            {/* Role history button */}
             <button
               onClick={() => fetchRoleHistory(employee.id)}
               disabled={loadingRoleHistory[employee.id]}
@@ -103,6 +107,7 @@ const EmployeeSearch = () => {
               {loadingRoleHistory[employee.id] ? 'Loading...' : 'View Role History'}
             </button>
 
+            {/* Display role history if loaded */}
             {roleHistories[employee.id] && (
               <div style={{ marginTop: '1rem' }}>
                 <h4>Role History:</h4>
@@ -116,6 +121,7 @@ const EmployeeSearch = () => {
                         <th style={{ border: '1px solid #ddd', padding: '8px' }}>Duties</th>
                         <th style={{ border: '1px solid #ddd', padding: '8px' }}>Start Date</th>
                         <th style={{ border: '1px solid #ddd', padding: '8px' }}>End Date</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px' }}>Company</th> {/* 🆕 */}
                       </tr>
                     </thead>
                     <tbody>
@@ -127,6 +133,9 @@ const EmployeeSearch = () => {
                           <td style={{ border: '1px solid #ddd', padding: '8px' }}>
                             {role.date_left || 'Present'}
                           </td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                            {role.company_name}
+                          </td> {/* 🆕 Display company */}
                         </tr>
                       ))}
                     </tbody>

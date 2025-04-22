@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const RoleHistoryForm = () => {
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state for fetching employees
   const [formData, setFormData] = useState({
     employee: '',
     role: '',
@@ -14,7 +15,10 @@ const RoleHistoryForm = () => {
   useEffect(() => {
     // Fetch employees so user can select who the role history is for
     axios.get('https://orange-system-wrgvjxvw6j9whg744-8000.app.github.dev/api/employees/')
-      .then(res => setEmployees(res.data));
+      .then(res => {
+        setEmployees(res.data);
+        setLoading(false); // Set loading to false once the data is fetched
+      });
   }, []);
 
   const handleChange = (e) => {
@@ -27,6 +31,10 @@ const RoleHistoryForm = () => {
       .then(() => alert('Role history added!'))
       .catch(err => console.error(err));
   };
+
+  if (loading) {
+    return <div>Loading employees...</div>; // Show loading message while fetching data
+  }
 
   return (
     <form onSubmit={handleSubmit}>
